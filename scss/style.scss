@@ -1,0 +1,239 @@
+//pointer-events: none; makes element transparent for clicking
+
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+@mixin media-wp($_a) {
+  @media only all and (min-width: $_a) {
+    @content;
+  }
+}
+
+@mixin media-wm($_b) {
+  @media only all and (max-width: $_b) {
+    @content;
+  }
+}
+
+@mixin media-hp($_c) {
+  @media only all and (min-height: $_c) {
+    @content;
+  }
+}
+
+@mixin media-hm($_d) {
+  @media only all and (max-hemin: $_d) {
+    @content;
+  }
+}
+
+$sexy-background: linear-gradient(223.58deg, #167524 -1.08%, #c8db81 85.64%);
+
+// @mixin distance-responsive($_a, $_b, $_vw0, $_vw1, $_prop) {
+//   #{$_prop}: #{$_a + px};
+//   @include media_wp(#{$_vw0 + px}) {
+//     #{$_prop}: calc(
+//       #{$_a + px} + (100vw - #{$_vw0 + px}) * (#{$_b} - #{$_a}) / (#{$_vw1} - #{$_vw0})
+//     );
+//   }
+//   @include media_wp(#{$_vw1 + px}) {
+//     #{$_prop}: #{$_b + px};
+//   }
+// }
+
+@mixin distance-responsive($_a, $_b, $_vw0, $_vw1, $_props...) {
+  //distance-responsive(наймешне значення, найбільше значення, наймеша ширина екрану, найбільша ширина екрану, prop1, pro2, ...)
+  $_c: ($_b - $_a) / ($_vw1 - $_vw0);
+  @each $_prop in $_props {
+    #{$_prop}: #{$_a + px};
+  }
+  @media only all and (min-width: #{$_vw0 + px}) {
+    @each $_prop in $_props {
+      #{$_prop}: calc(100vw * #{$_c} + #{$_a - $_vw0 * $_c + px});
+    }
+  }
+  @media only all and (min-width: #{$_vw1 + px}) {
+    @each $_prop in $_props {
+      #{$_prop}: #{$_b + px};
+    }
+  }
+}
+
+$xx-small: 320px;
+$x-small: 480px;
+$small: 576px;
+$normal: 768px;
+$large: 992px;
+$x-large: 1200px;
+$xx-large: 1920px;
+
+$content: 768px;
+
+$trnst: 0.3s ease;
+
+$emoji-big: 100px;
+
+$color1: #eca84d;
+$color2: #29d225;
+$color3: #ff5733;
+@import url("https://fonts.googleapis.com/css2?family=Itim&display=swap");
+@import "__reset.scss";
+
+:root {
+  font-family: "Itim", cursive;
+}
+
+._lock {
+  overflow: hidden;
+}
+
+.container {
+  $padding: 12px;
+  padding: 0 $padding;
+  max-width: $content + $padding * 2;
+  margin: 0 auto;
+}
+
+.btn {
+  position: relative;
+  padding: 0.5rem 1rem;
+  font-size: 18px;
+  background-color: #ddd155;
+  &:after {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    content: "";
+    width: 100%;
+    height: 100%;
+    border: 0.2rem solid black;
+    transition: 0.1s;
+  }
+  &:hover {
+    background-color: peru;
+  }
+  &:active {
+    &:after {
+      top: 0;
+      left: 0;
+    }
+  }
+  &._lrg {
+    padding: 1rem 2rem;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  &._sm {
+  }
+  &._hidden {
+    display: none;
+  }
+}
+/**********************
+---------CONTENT
+*********************/
+
+.wrapper {
+}
+.quiz {
+  background-color: $color1;
+  &._green {
+    background-color: $color2;
+  }
+  &._red {
+    background-color: $color3;
+  }
+  &__timer {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 0.8rem;
+
+    background-color: black;
+    border-bottom: 0.2rem solid black;
+    &-time {
+      background-color: #29d225;
+      width: 0;
+      height: 100%;
+    }
+  }
+
+  &__container {
+    position: relative;
+
+    min-height: 100vh;
+    padding: 0 0.75rem;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    color: blueviolet;
+    font-size: 24px;
+    font-style: italic;
+    position: absolute;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &__body {
+    background-color: white;
+    padding: 2.5rem 0.75rem;
+    border-radius: 0.25rem;
+    flex: 0 1 $small;
+
+    transition: 0.5s;
+  }
+
+  &__question {
+    font-size: 24px;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 2rem;
+  }
+
+  &__answers {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 1.5rem;
+    column-gap: 2rem;
+    margin-bottom: 3rem;
+    @include media-wp($x-small) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &__choice {
+    &._true {
+      background-color: $color2;
+    }
+    &._false {
+      background-color: $color3;
+    }
+    &._noclick {
+      pointer-events: none;
+    }
+    // &:after {
+    //   top: 0;
+    //   left: 0;
+    // }
+  }
+
+  &__controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    transition: 0.3s;
+    &._hidden {
+      display: none;
+    }
+  }
+
+  &__control {
+  }
+}
